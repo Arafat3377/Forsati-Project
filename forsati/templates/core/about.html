@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}{% if LANGUAGE_CODE == "en" %}About Us | Forsati{% else %}من نحن | فرصتي{% endif %}{% endblock %}
+{% block content %}
+<section class="hero">
+  <h1>{% if LANGUAGE_CODE == "en" %}About Us{% else %}من نحن{% endif %}</h1>
+  <p>
+    {% if LANGUAGE_CODE == "en" %}
+      Forsati is a smart platform that helps students discover cooperative training opportunities across Al-Qassim.
+    {% else %}
+      فرصتي منصة ذكية تساعد الطالبات والطلاب على اكتشاف فرص التدريب التعاوني في منطقة القصيم.
+    {% endif %}
+  </p>
+</section>
+
+<section class="card">
+  <h2>{% if LANGUAGE_CODE == "en" %}How Forsati works{% else %}كيف يعمل موقع فرصتي؟{% endif %}</h2>
+  {% if LANGUAGE_CODE == "en" %}
+    <p class="muted">Forsati brings students and participating organizations together in one place. Students can browse available opportunities and filter them by city or field, then open an opportunity to learn about its organization and details.</p>
+    <p class="muted">The AI search makes discovery easier: describe the kind of training you are looking for, and the platform finds relevant opportunities. When you find a suitable match, sign in to submit your application and track it later from “My applications.”</p>
+  {% else %}
+    <p class="muted">يجمع موقع فرصتي الطالبات والطلاب والجهات المشاركة في مكان واحد. يمكن استعراض الفرص المتاحة وتصفيتها حسب المدينة أو المجال، ثم فتح أي فرصة للاطلاع على تفاصيلها والجهة المقدمة لها.</p>
+    <p class="muted">ويسهّل البحث الذكي العثور على الفرص المناسبة؛ اكتب نوع التدريب الذي تبحث عنه ليعرض الموقع النتائج الأقرب لاهتماماتك. بعد اختيار الفرصة، سجّل الدخول وقدّم طلبك، ثم تابع طلباتك من صفحة «طلباتي».</p>
+  {% endif %}
+</section>
+
+<section>
+  <h2>{% if LANGUAGE_CODE == "en" %}The team{% else %}فريق العمل{% endif %}</h2>
+  <div class="grid">
+    <div class="card team-member">Jana Al-Hussein</div>
+    <div class="card team-member">Ritaj Al-Rashidi</div>
+    <div class="card team-member">Ghala Al-Mutairi</div>
+    <div class="card team-member">Shahad Al-Rashidi</div>
+    <div class="card team-member">Maria Al-Mutairi</div>
+    <div class="card team-member">Reem Al-Rashidi</div>
+  </div>
+</section>
+<style>
+.team-member{text-align:center;font-weight:700;color:var(--deep);margin:0}
+</style>
+{% endblock %}

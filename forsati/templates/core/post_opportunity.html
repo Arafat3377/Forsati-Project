@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}{% if LANGUAGE_CODE == "en" %}Post a training opportunity{% else %}نشر فرصة تدريب{% endif %}{% endblock %}
+{% block content %}
+<div class="hero">
+  <h1 style="font-size:30px">📢 {% if LANGUAGE_CODE == "en" %}Post a training opportunity{% else %}انشر فرصة تدريب جديدة{% endif %}</h1>
+  <p>{% if LANGUAGE_CODE == "en" %}Your opportunity will be visible to all students on the platform immediately.{% else %}ستظهر الفرصة لجميع الطلاب في المنصة فور نشرها{% endif %}</p>
+</div>
+<div class="card" style="max-width:620px;margin:0 auto">
+  <form method="post">{% csrf_token %}
+    {% if orgs|length > 1 %}
+      <label>{% if LANGUAGE_CODE == "en" %}Publishing as{% else %}النشر باسم{% endif %}</label>
+      <select name="organization">
+        {% for o in orgs %}<option value="{{ o.pk }}">{{ o.name }}</option>{% endfor %}
+      </select>
+    {% else %}
+      <p class="muted">{% if LANGUAGE_CODE == "en" %}Publishing as:{% else %}النشر باسم:{% endif %} <b>{{ orgs.first.name }}</b></p>
+    {% endif %}
+    {% for f in form %}
+      <label>{{ f.label }}</label>
+      {{ f }}
+      {% if f.errors %}<div style="color:#b91c1c;font-size:13px;margin-top:4px">{{ f.errors }}</div>{% endif %}
+    {% endfor %}
+    <button class="btn" style="margin-top:16px">{% if LANGUAGE_CODE == "en" %}Publish opportunity{% else %}نشر الفرصة 🚀{% endif %}</button>
+  </form>
+</div>
+{% endblock %}

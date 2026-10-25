@@ -1,0 +1,34 @@
+
+{% extends "base.html" %}
+{% load localization %}
+{% block title %}{% if LANGUAGE_CODE == "en" %}AI Search{% else %}البحث الذكي{% endif %}{% endblock %}
+{% block content %}
+<div class="hero">
+  <h1>{% if LANGUAGE_CODE == "en" %}AI Opportunity Search{% else %}البحث الذكي{% endif %} 🤖</h1>
+  <p>{% if LANGUAGE_CODE == "en" %}Describe what you are looking for and AI will suggest matching opportunities.{% else %}اكتب طلبك بلغتك الطبيعية، وسيفهمها الذكاء الاصطناعي ويقترح لك الفرص المناسبة{% endif %}</p>
+</div>
+<form method="get" class="search-form">
+  <input name="q" value="{{ query }}"
+    placeholder="{% if LANGUAGE_CODE == 'en' %}Example: I am looking for a cybersecurity internship in Buraidah{% else %}مثال: أبحث عن تدريب تعاوني في مجال الأمن السيبراني في بريدة{% endif %}">
+  <button class="btn">{% if LANGUAGE_CODE == "en" %}Search{% else %}ابحث{% endif %}</button>
+</form>
+{% if intent %}
+<p class="muted" style="margin-top:10px">
+  {% if LANGUAGE_CODE == "en" %}Request interpreted → Field: <b>{{ intent.field|default:"Not specified" }}</b>, City: <b>{{ intent.city|default:"Not specified" }}</b><span class="tag">Engine: {{ intent.source }}</span>{% else %}فهم النموذج طلبك → المجال: <b>{{ intent.field|default:"غير محدد" }}</b>، المدينة: <b>{{ intent.city|default:"غير محددة" }}</b><span class="tag">المحرك: {{ intent.source }}</span>{% endif %}
+</p>
+{% endif %}
+{% if answer %}<h3>{% if LANGUAGE_CODE == "en" %}AI assistant response{% else %}إجابة المساعد الذكي{% endif %}</h3><div class="answer">{{ answer }}</div>{% endif %}
+{% if results %}
+<h3>{% if LANGUAGE_CODE == "en" %}Matching opportunities{% else %}الفرص المطابقة{% endif %} ({{ results|length }})</h3>
+<div class="grid">
+{% for o in results %}
+  <div class="card">
+    <h3>{{ o.title|localize:LANGUAGE_CODE }}</h3>
+    <span class="tag">{{ o.field|localize:LANGUAGE_CODE }}</span><span class="tag">{{ o.city|localize:LANGUAGE_CODE }}</span>
+    <p>{{ o.description|localize:LANGUAGE_CODE|truncatewords:18 }}</p>
+    <a class="btn ghost" href="{% url 'opportunity_detail' o.pk %}">{% if LANGUAGE_CODE == "en" %}Details{% else %}التفاصيل{% endif %}</a>
+  </div>
+{% endfor %}
+</div>
+{% endif %}
+{% endblock %}

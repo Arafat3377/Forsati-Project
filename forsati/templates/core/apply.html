@@ -1,0 +1,13 @@
+
+{% extends "base.html" %}
+{% load localization %}
+{% block content %}
+<div class="card">
+  <h2>{% if LANGUAGE_CODE == "en" %}Apply for:{% else %}التقديم على:{% endif %} {{ opp.title|localize:LANGUAGE_CODE }}</h2>
+  <form method="post">{% csrf_token %}
+    <label>{% if LANGUAGE_CODE == "en" %}Cover letter (optional){% else %}رسالة التقديم (اختياري){% endif %}</label>
+    <textarea name="cover_letter" rows="5" placeholder="{% if LANGUAGE_CODE == 'en' %}Introduce yourself and your skills...{% else %}عرّف بنفسك وبمهاراتك...{% endif %}"></textarea>
+    <br><br><button class="btn">{% if LANGUAGE_CODE == "en" %}Submit application{% else %}إرسال الطلب{% endif %}</button>
+  </form>
+</div>
+{% endblock %}

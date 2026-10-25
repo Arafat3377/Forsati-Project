@@ -1,0 +1,283 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<style>
+/* ===== الواجهة الرئيسية ===== */
+.home-hero{position:relative;border-radius:0 0 26px 26px;overflow:hidden;margin:0 -16px 0;
+           background:url('{% static 'images/hero.jpg' %}') center/cover no-repeat}
+.home-hero .overlay{background:linear-gradient(90deg,rgba(46,16,101,.82) 0%,rgba(76,29,149,.55) 55%,rgba(76,29,149,.25) 100%);
+                    padding:84px 8% 96px;color:#fff;text-align:start}
+.home-hero h1{color:#fff;font-size:clamp(28px,4.6vw,44px);margin:0 0 12px;line-height:1.35;
+             text-shadow:0 2px 12px rgba(0,0,0,.35)}
+.home-hero p{font-size:clamp(14px,1.8vw,18px);margin:0 0 24px;opacity:.94;max-width:520px;line-height:1.9}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap}
+.hero-btns .btn.ghost{background:rgba(255,255,255,.94);border:none;color:var(--deep)}
+/* ===== شريط البحث ===== */
+.search-bar{background:#fff;border-radius:14px;box-shadow:0 12px 34px rgba(46,16,101,.16);
+            padding:14px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;
+            margin:-52px auto 0;max-width:960px;position:relative;z-index:5;border:1px solid var(--border)}
+.search-bar .field{flex:1;min-width:150px;display:flex;align-items:center;gap:8px}
+.search-bar .field span.ico{color:var(--p);font-size:17px}
+.search-bar input,.search-bar select{border:none;background:transparent;padding:8px 4px;width:100%}
+.search-bar input:focus,.search-bar select:focus{box-shadow:none}
+.search-bar .divider{width:1px;height:34px;background:var(--border)}
+.search-bar .btn{white-space:nowrap;padding:12px 34px}
+@media(max-width:768px){.search-bar .divider{display:none}.search-bar .field{min-width:120px}}
+/* ===== شريط الإحصائيات ===== */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:0;margin:34px 0 0;
+       background:linear-gradient(120deg,#4c1d95,#6d28d9 55%,#8b5cf6);border-radius:16px;
+       box-shadow:0 12px 30px rgba(76,29,149,.22);overflow:hidden}
+.stat{color:#fff;text-align:center;padding:26px 12px;position:relative}
+.stat + .stat::before{content:"";position:absolute;inset-inline-start:0;top:22%;height:56%;width:1px;background:rgba(255,255,255,.25)}
+.stat .ico{font-size:26px;margin-bottom:8px}
+.stat b{display:block;font-size:26px;margin-bottom:4px}
+.stat span{font-size:14px;opacity:.92}
+/* ===== المدن ===== */
+.section-title{text-align:center;margin:42px 0 8px}
+.section-title h2{margin:0;font-size:25px}
+.section-title p{color:var(--muted);margin:8px 0 0}
+.section-title::after{content:"";display:block;width:60px;height:3px;border-radius:2px;margin:12px auto 0;
+                      background:linear-gradient(90deg,var(--p),var(--a))}
+.cities{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-top:22px}
+.city-card{background:#fff;border:1px solid var(--border);border-radius:16px;overflow:hidden;text-decoration:none;
+           color:var(--text);transition:all .2s ease;box-shadow:0 6px 18px rgba(76,29,149,.07)}
+.city-card:hover{transform:translateY(-5px);box-shadow:0 14px 30px rgba(76,29,149,.16)}
+.city-card img{width:100%;height:130px;object-fit:cover;display:block}
+.city-card .body{padding:0 14px 16px;text-align:center;margin-top:-24px}
+.city-card .cicon{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--deep),var(--a));
+                  color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:21px;
+                  border:3px solid #fff;box-shadow:0 4px 12px rgba(76,29,149,.25)}
+.city-card h3{margin:10px 0 6px;font-size:17px}
+.city-card p{margin:0;font-size:13px;color:var(--muted);line-height:1.7}
+.center-btn{text-align:center;margin:24px 0 0}
+/* ===== كيف تساعدك فرصتي ===== */
+.help-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin-top:24px}
+.help-item{background:#fff;border:1px solid var(--border);border-radius:16px;padding:26px 18px;text-align:center;
+           box-shadow:0 6px 18px rgba(76,29,149,.06)}
+.help-item .hicon{width:58px;height:58px;margin:0 auto 14px;border-radius:14px;background:var(--soft);
+                  display:flex;align-items:center;justify-content:center;font-size:26px}
+.help-item h3{margin:0 0 8px;font-size:16px}
+.help-item p{margin:0;font-size:13.5px;color:var(--muted);line-height:1.8}
+/* ===== الأقسام السابقة ===== */
+.partners{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin-top:18px}
+.partner{display:block;width:150px;text-align:center;text-decoration:none;color:var(--text)}
+.partner img{width:110px;height:78px;object-fit:contain;padding:4px;background:#fff;border-radius:12px;
+             box-shadow:0 6px 16px rgba(76,29,149,.14);transition:transform .18s ease}
+.partner img:hover{transform:translateY(-4px)}
+.partner span{display:block;margin-top:8px;font-size:13px;font-weight:650;color:var(--text)}
+.partner:hover span{color:var(--p)}
+.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-top:18px}
+.field-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px 10px;text-align:center;
+            text-decoration:none;color:var(--text);transition:all .18s ease;box-shadow:0 5px 16px rgba(76,29,149,.06)}
+.field-card:hover{transform:translateY(-4px);box-shadow:0 10px 24px rgba(76,29,149,.14);border-color:#d8c4f5}
+.field-card .ico{font-size:30px;display:block;margin-bottom:8px}
+.field-card b{font-size:14px}
+.cta{margin:40px 0 6px;border-radius:18px;overflow:hidden;position:relative;
+     background:url('{% static 'images/cities/alula.jpg' %}') center/cover no-repeat}
+.cta .overlay{background:linear-gradient(120deg,rgba(46,16,101,.88),rgba(124,58,237,.82));
+              padding:46px 20px;text-align:center;color:#fff}
+.cta h2{color:#fff;margin:0 0 8px}
+</style>
+
+<!-- 1) الواجهة -->
+<div class="home-hero">
+  <div class="overlay">
+    <h1>{% if LANGUAGE_CODE == "en" %}From your skills to your next opportunity{% else %}من مهارتك<br>إلى فرصتك القادمة{% endif %}</h1>
+    <p>{% if LANGUAGE_CODE == "en" %}An integrated platform for training and employment — we help you gain skills and land the right opportunity.{% else %}منصة متكاملة للتدريب والتوظيف نساعدك على اكتساب المهارات والحصول على الفرص المناسبة{% endif %}</p>
+    <div class="hero-btns">
+      <a class="btn" href="{% url 'opportunity_list' %}">{% if LANGUAGE_CODE == "en" %}Explore opportunities{% else %}استكشف الفرص{% endif %}</a>
+      <a class="btn ghost" href="{% url 'coach' %}">{% if LANGUAGE_CODE == "en" %}Career coach 🎓{% else %}تصفح الدورات 🎓{% endif %}</a>
+    </div>
+  </div>
+</div>
+
+<!-- 2) شريط البحث -->
+<form class="search-bar" method="get" action="{% url 'opportunity_list' %}">
+  <div class="field" style="flex:1.6"><span class="ico">🔍</span>
+    <input name="q" placeholder="{% if LANGUAGE_CODE == 'en' %}Search for a course or job...{% else %}ابحث عن دورة أو وظيفة...{% endif %}">
+  </div>
+  <div class="divider"></div>
+  <div class="field"><span class="ico">▦</span>
+    <select name="field">
+      <option value="">{% if LANGUAGE_CODE == "en" %}Field{% else %}المجال{% endif %}</option>
+      {% for f in fields %}<option value="{{ f }}">{{ f }}</option>{% endfor %}
+    </select>
+  </div>
+  <div class="divider"></div>
+  <div class="field"><span class="ico">📍</span>
+    <select name="city">
+      <option value="">{% if LANGUAGE_CODE == "en" %}Location{% else %}الموقع{% endif %}</option>
+      {% for c in cities %}<option value="{{ c }}">{{ c }}</option>{% endfor %}
+    </select>
+  </div>
+  <button class="btn">{% if LANGUAGE_CODE == "en" %}Search{% else %}بحث{% endif %}</button>
+</form>
+
+<!-- 3) الإحصائيات -->
+<div class="stats">
+  <div class="stat"><div class="ico">💼</div><b>+{{ count }}</b><span>{% if LANGUAGE_CODE == "en" %}Job opportunities{% else %}فرصة تدريبية{% endif %}</span></div>
+  <div class="stat"><div class="ico">🎓</div><b>+{{ fields|length }}</b><span>{% if LANGUAGE_CODE == "en" %}Training fields{% else %}مجال تدريبي{% endif %}</span></div>
+  <div class="stat"><div class="ico">👥</div><b>+{{ applicants }}</b><span>{% if LANGUAGE_CODE == "en" %}Trainees with us{% else %}متدرب معنا{% endif %}</span></div>
+  <div class="stat"><div class="ico">🏢</div><b>+{{ orgs }}</b><span>{% if LANGUAGE_CODE == "en" %}Trusted companies{% else %}شركة موثوقة{% endif %}</span></div>
+</div>
+
+<!-- 4) المدن -->
+<div class="section-title">
+  <h2>{% if LANGUAGE_CODE == "en" %}Explore opportunities in Saudi cities{% else %}اكتشف الفرص في مدن المملكة{% endif %}</h2>
+  <p>{% if LANGUAGE_CODE == "en" %}Choose your city and discover available training opportunities{% else %}اختر مدينتك واستكشف الدورات التدريبية والوظائف المتاحة{% endif %}</p>
+</div>
+<div class="cities">
+  <a class="city-card" href="{% url 'opportunity_list' %}?city=الرياض">
+    <img src="{% static 'images/hero.jpg' %}" alt="الرياض">
+    <div class="body"><span class="cicon">🏙️</span><h3>{% if LANGUAGE_CODE == "en" %}Riyadh{% else %}الرياض{% endif %}</h3>
+    <p>{% if LANGUAGE_CODE == "en" %}Capital of opportunity, business growth and innovation{% else %}عاصمة الفرص ونمو الأعمال والابتكار{% endif %}</p></div>
+  </a>
+  <a class="city-card" href="{% url 'opportunity_list' %}?city=جدة">
+    <img src="{% static 'images/cities/jeddah.jpg' %}" alt="جدة">
+    <div class="body"><span class="cicon">🌊</span><h3>{% if LANGUAGE_CODE == "en" %}Jeddah{% else %}جدة{% endif %}</h3>
+    <p>{% if LANGUAGE_CODE == "en" %}Red Sea gateway and business hub{% else %}بوابة البحر الأحمر ومركز الأعمال والسياحة{% endif %}</p></div>
+  </a>
+  <a class="city-card" href="{% url 'opportunity_list' %}?city=الدمام">
+    <img src="{% static 'images/cities/dammam.jpg' %}" alt="الدمام">
+    <div class="body"><span class="cicon">⚙️</span><h3>{% if LANGUAGE_CODE == "en" %}Dammam{% else %}الدمام{% endif %}</h3>
+    <p>{% if LANGUAGE_CODE == "en" %}Heart of industry and energy with promising careers{% else %}قلب الصناعة والطاقة وفرص مهنية واعدة{% endif %}</p></div>
+  </a>
+  <a class="city-card" href="{% url 'opportunity_list' %}?city=القصيم">
+    <img src="{% static 'images/qassim1.jpg' %}" alt="القصيم">
+    <div class="body"><span class="cicon">🌴</span><h3>{% if LANGUAGE_CODE == "en" %}Al-Qassim{% else %}القصيم{% endif %}</h3>
+    <p>{% if LANGUAGE_CODE == "en" %}Ideal environment for business and investment{% else %}بيئة مثالية للأعمال والاستثمار{% endif %}</p></div>
+  </a>
+  <a class="city-card" href="{% url 'opportunity_list' %}?city=أبها">
+    <img src="{% static 'images/cities/abha.jpg' %}" alt="أبها">
+    <div class="body"><span class="cicon">⛰️</span><h3>{% if LANGUAGE_CODE == "en" %}Abha{% else %}أبها{% endif %}</h3>
+    <p>{% if LANGUAGE_CODE == "en" %}High quality of life and promising tourism{% else %}جودة حياة عالية وفرص سياحية واعدة{% endif %}</p></div>
+  </a>
+  <a class="city-card" href="{% url 'opportunity_list' %}?city=العلا">
+    <img src="{% static 'images/cities/alula.jpg' %}" alt="العلا">
+    <div class="body"><span class="cicon">🏛️</span><h3>{% if LANGUAGE_CODE == "en" %}Al-Ula{% else %}العلا{% endif %}</h3>
+    <p>{% if LANGUAGE_CODE == "en" %}Historic legacy and a promising tourism future{% else %}إرث حضاري ومستقبل واعد للسياحة{% endif %}</p></div>
+  </a>
+</div>
+<div class="center-btn">
+  <a class="btn ghost" href="{% url 'opportunity_list' %}">‹ {% if LANGUAGE_CODE == "en" %}View all cities{% else %}عرض جميع المدن{% endif %}</a>
+</div>
+
+<!-- 5) كيف تساعدك فرصتي -->
+<div class="section-title">
+  <h2>{% if LANGUAGE_CODE == "en" %}How does Forsati help you?{% else %}كيف تساعدك فرصتي؟{% endif %}</h2>
+  <p>{% if LANGUAGE_CODE == "en" %}Your journey to the future starts here{% else %}رحلتك نحو المستقبل تبدأ من هنا{% endif %}</p>
+</div>
+<div class="help-grid">
+  <div class="help-item"><div class="hicon">⚡</div><h3>{% if LANGUAGE_CODE == "en" %}Faster employment{% else %}توظيف أسرع{% endif %}</h3>
+    <p>{% if LANGUAGE_CODE == "en" %}Connect directly with suitable employers{% else %}تواصل مباشر مع أصحاب العمل المناسبين{% endif %}</p></div>
+  <div class="help-item"><div class="hicon">🧠</div><h3>{% if LANGUAGE_CODE == "en" %}Specialized content{% else %}محتوى متخصص{% endif %}</h3>
+    <p>{% if LANGUAGE_CODE == "en" %}Content and directions in demand in the job market{% else %}محتوى وجهات مطلوبة في سوق العمل{% endif %}</p></div>
+  <div class="help-item"><div class="hicon">🎓</div><h3>{% if LANGUAGE_CODE == "en" %}Accredited training{% else %}تدريب معتمد{% endif %}</h3>
+    <p>{% if LANGUAGE_CODE == "en" %}Training courses accredited by official bodies{% else %}دورات تدريبية معتمدة من جهات رسمية{% endif %}</p></div>
+  <div class="help-item"><div class="hicon">✅</div><h3>{% if LANGUAGE_CODE == "en" %}Trusted opportunities{% else %}فرص موثوقة{% endif %}</h3>
+    <p>{% if LANGUAGE_CODE == "en" %}Job opportunities from accredited companies{% else %}فرص وظيفية من شركات معتمدة في المملكة{% endif %}</p></div>
+</div>
+<div class="center-btn" style="margin:26px 0 8px">
+  <a class="btn" href="{% url 'register' %}">‹ {% if LANGUAGE_CODE == "en" %}Start your journey now{% else %}ابدأ رحلتك الآن{% endif %}</a>
+</div>
+
+<!-- 6) الجهات الشريكة -->
+<div class="section-title">
+  <h2>🏛️ {% if LANGUAGE_CODE == "en" %}Partner Universities{% else %}الجامعات الشريكة{% endif %}</h2>
+</div>
+<div class="partners">
+  {% for o in universities %}
+  {% if o.website %}
+  <a class="partner" href="{{ o.website }}" target="_blank" rel="noopener noreferrer" aria-label="{{ o.name }}">
+  {% else %}
+  <div class="partner">
+  {% endif %}
+    {% if o.logo %}<img src="{% static 'images/partners/'|add:o.logo|add:'.png' %}" alt="{{ o.name }}">{% endif %}
+    <span>{{ o.name|truncatewords:4 }}</span>
+  {% if o.website %}
+  </a>
+  {% else %}
+  </div>
+  {% endif %}
+  {% endfor %}
+</div>
+<div class="section-title">
+  <h2>🏦 {% if LANGUAGE_CODE == "en" %}Partner Banks{% else %}البنوك الشريكة{% endif %}</h2>
+</div>
+<div class="partners">
+  {% for o in banks %}
+  {% if o.website %}
+  <a class="partner" href="{{ o.website }}" target="_blank" rel="noopener noreferrer" aria-label="{{ o.name }}">
+  {% else %}
+  <div class="partner">
+  {% endif %}
+    {% if o.logo %}<img src="{% static 'images/partners/'|add:o.logo|add:'.png' %}" alt="{{ o.name }}">{% endif %}
+    <span>{{ o.name|truncatewords:4 }}</span>
+  {% if o.website %}
+  </a>
+  {% else %}
+  </div>
+  {% endif %}
+  {% endfor %}
+</div>
+<div class="section-title">
+  <h2>🏛 {% if LANGUAGE_CODE == "en" %}Government &amp; Institutions{% else %}المؤسسات والجهات الحكومية{% endif %}</h2>
+</div>
+<div class="partners">
+  {% for o in govs %}
+  {% if o.website %}
+  <a class="partner" href="{{ o.website }}" target="_blank" rel="noopener noreferrer" aria-label="{{ o.name }}">
+  {% else %}
+  <div class="partner">
+  {% endif %}
+    {% if o.logo %}<img src="{% static 'images/partners/'|add:o.logo|add:'.png' %}" alt="{{ o.name }}">{% endif %}
+    <span>{{ o.name|truncatewords:4 }}</span>
+  {% if o.website %}
+  </a>
+  {% else %}
+  </div>
+  {% endif %}
+  {% endfor %}
+</div>
+
+<!-- 7) المجالات -->
+<div class="section-title">
+  <h2>🔥 {% if LANGUAGE_CODE == "en" %}Most In-Demand Training Fields{% else %}مجالات التدريب الأكثر طلباً{% endif %}</h2>
+</div>
+<div class="fields">
+  <a class="field-card" href="{% url 'opportunity_list' %}?field=برمجة"><span class="ico">💻</span><b>{% if LANGUAGE_CODE == "en" %}Programming{% else %}برمجة وتطوير{% endif %}</b></a>
+  <a class="field-card" href="{% url 'opportunity_list' %}?field=سيبراني"><span class="ico">🛡️</span><b>{% if LANGUAGE_CODE == "en" %}Cybersecurity{% else %}الأمن السيبراني{% endif %}</b></a>
+  <a class="field-card" href="{% url 'opportunity_list' %}?field=بيانات"><span class="ico">📊</span><b>{% if LANGUAGE_CODE == "en" %}Data Analysis{% else %}تحليل البيانات{% endif %}</b></a>
+  <a class="field-card" href="{% url 'opportunity_list' %}?field=إدارة"><span class="ico">📋</span><b>{% if LANGUAGE_CODE == "en" %}Business Admin{% else %}إدارة الأعمال{% endif %}</b></a>
+  <a class="field-card" href="{% url 'opportunity_list' %}?field=هندسة"><span class="ico">⚙️</span><b>{% if LANGUAGE_CODE == "en" %}Engineering{% else %}الهندسة{% endif %}</b></a>
+  <a class="field-card" href="{% url 'opportunity_list' %}?field=تصميم"><span class="ico">🎨</span><b>{% if LANGUAGE_CODE == "en" %}Design UI/UX{% else %}التصميم{% endif %}</b></a>
+  <a class="field-card" href="{% url 'opportunity_list' %}?field=شبكات"><span class="ico">🌐</span><b>{% if LANGUAGE_CODE == "en" %}Networks{% else %}الشبكات{% endif %}</b></a>
+  <a class="field-card" href="{% url 'opportunity_list' %}?field=دعم"><span class="ico">🖥️</span><b>{% if LANGUAGE_CODE == "en" %}IT Support{% else %}الدعم الفني{% endif %}</b></a>
+</div>
+
+<!-- 8) أحدث الفرص -->
+{% if latest %}
+<div class="section-title">
+  <h2>🆕 {% if LANGUAGE_CODE == "en" %}Latest Opportunities{% else %}أحدث الفرص المنشورة{% endif %}</h2>
+</div>
+<div class="grid">
+  {% for o in latest %}
+  <div class="card">
+    <h3 style="margin-top:0">{{ o.title }}</h3>
+    <span class="tag">{{ o.field }}</span><span class="tag">{{ o.city }}</span>
+    <p class="muted">{{ o.organization.name }}</p>
+    <a class="btn ghost" href="{% url 'opportunity_detail' o.pk %}">{% if LANGUAGE_CODE == "en" %}Details{% else %}التفاصيل{% endif %}</a>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<!-- 9) دعوة للانضمام -->
+<div class="cta">
+  <div class="overlay">
+    <h2>{% if LANGUAGE_CODE == "en" %}Are you a company or university?{% else %}هل أنت شركة أو مؤسسة أو جامعة؟{% endif %}</h2>
+    <p style="margin:0 0 16px">{% if LANGUAGE_CODE == "en" %}Register and post training opportunities for thousands of students.{% else %}سجّل جهتك وانشر الفرص التدريبية ليصلك آلاف الطلاب والخريجين{% endif %}</p>
+    <a class="btn" style="background:#fff;color:var(--deep);border:none" href="{% url 'org_register' %}">{% if LANGUAGE_CODE == "en" %}Register now 🏢{% else %}سجّل جهتك الآن 🏢{% endif %}</a>
+  </div>
+</div>
+{% endblock %}

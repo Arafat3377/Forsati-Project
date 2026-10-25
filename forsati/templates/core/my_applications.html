@@ -1,0 +1,12 @@
+
+{% extends "base.html" %}
+{% load localization %}
+{% block content %}
+<h2>{% if LANGUAGE_CODE == "en" %}My applications{% else %}طلبات التقديم{% endif %}</h2>
+{% for a in apps %}
+<div class="card">
+  <b>{{ a.opportunity.title|localize:LANGUAGE_CODE }}</b> — {{ a.opportunity.organization.name|localize:LANGUAGE_CODE }}
+  <span class="tag">{% if LANGUAGE_CODE == "en" %}{% if a.status == "pending" %}Pending{% elif a.status == "accepted" %}Accepted{% else %}Rejected{% endif %}{% else %}{{ a.get_status_display }}{% endif %}</span>
+</div>
+{% empty %}<p>{% if LANGUAGE_CODE == "en" %}You have not applied to any opportunities yet.{% else %}لم تقدّم على أي فرصة بعد.{% endif %}</p>{% endfor %}
+{% endblock %}

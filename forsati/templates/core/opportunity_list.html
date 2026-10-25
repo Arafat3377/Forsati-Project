@@ -1,0 +1,27 @@
+
+{% extends "base.html" %}
+{% load localization %}
+{% block title %}{% if LANGUAGE_CODE == "en" %}Opportunities{% else %}الفرص{% endif %}{% endblock %}
+{% block content %}
+<h2>{% if LANGUAGE_CODE == "en" %}Cooperative training opportunities{% else %}فرص التدريب التعاوني{% endif %}</h2>
+<form method="get" class="search-form">
+  <input name="q" value="{{ q }}" placeholder="{% if LANGUAGE_CODE == 'en' %}Search opportunities or organizations...{% else %}ابحث عن فرصة أو جهة...{% endif %}">
+  <select name="city"><option value="">{% if LANGUAGE_CODE == "en" %}All cities{% else %}كل المدن{% endif %}</option>
+    {% for c in cities %}<option {% if c == city %}selected{% endif %}>{{ c }}</option>{% endfor %}
+  </select>
+  <select name="field"><option value="">{% if LANGUAGE_CODE == "en" %}All fields{% else %}كل المجالات{% endif %}</option>
+    {% for f in fields %}<option {% if f == field %}selected{% endif %}>{{ f }}</option>{% endfor %}
+  </select>
+  <button class="btn">{% if LANGUAGE_CODE == "en" %}Search{% else %}بحث{% endif %}</button>
+</form>
+<div class="grid">
+{% for o in opportunities %}
+  <div class="card">
+    <h3>{{ o.title|localize:LANGUAGE_CODE }}</h3>
+    <span class="tag">{{ o.field|localize:LANGUAGE_CODE }}</span><span class="tag">{{ o.city|localize:LANGUAGE_CODE }}</span>
+    <p>{{ o.description|localize:LANGUAGE_CODE|truncatewords:20 }}</p>
+    <a class="btn ghost" href="{% url 'opportunity_detail' o.pk %}">{% if LANGUAGE_CODE == "en" %}Details and apply{% else %}التفاصيل والتقديم{% endif %}</a>
+  </div>
+{% empty %}<p>{% if LANGUAGE_CODE == "en" %}No matching opportunities found.{% else %}لا توجد نتائج مطابقة.{% endif %}</p>{% endfor %}
+</div>
+{% endblock %}

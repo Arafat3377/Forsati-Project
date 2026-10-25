@@ -1,0 +1,13 @@
+
+{% extends "base.html" %}
+{% block content %}
+<div class="card" style="max-width:420px;margin:auto">
+  <h2>{% if LANGUAGE_CODE == "en" %}Log in{% else %}تسجيل الدخول{% endif %}</h2>
+  <form method="post">{% csrf_token %}
+    <label>{% if LANGUAGE_CODE == "en" %}Username{% else %}اسم المستخدم{% endif %}</label>{{ form.username }}
+    <label>{% if LANGUAGE_CODE == "en" %}Password{% else %}كلمة المرور{% endif %}</label>{{ form.password }}
+    <br><br><button class="btn">{% if LANGUAGE_CODE == "en" %}Log in{% else %}دخول{% endif %}</button>
+  </form>
+  <p>{% if LANGUAGE_CODE == "en" %}Don't have an account?{% else %}ليس لديك حساب؟{% endif %} <a href="{% url 'register' %}">{% if LANGUAGE_CODE == "en" %}Register now{% else %}سجّل الآن{% endif %}</a></p>
+</div>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}{% if LANGUAGE_CODE == "en" %}Organization dashboard{% else %}لوحة تحكم الجهة{% endif %}{% endblock %}
+{% block content %}
+<div class="hero" style="padding:30px 18px">
+  <h1 style="font-size:28px">🏢 {% if LANGUAGE_CODE == "en" %}Organization dashboard{% else %}لوحة تحكم الجهة{% endif %}</h1>
+  <a class="btn" href="{% url 'post_opportunity' %}">{% if LANGUAGE_CODE == "en" %}+ Post opportunity{% else %}+ نشر فرصة جديدة{% endif %}</a>
+</div>
+
+{% if not orgs %}
+  <div class="card" style="text-align:center">
+    <p>{% if LANGUAGE_CODE == "en" %}You have not registered an organization yet.{% else %}لم تسجّل أي جهة بعد.{% endif %}</p>
+    <a class="btn" href="{% url 'org_register' %}">{% if LANGUAGE_CODE == "en" %}Register now{% else %}سجّل جهتك الآن{% endif %}</a>
+  </div>
+{% else %}
+  {% for o in orgs %}
+  <div class="card">
+    <h3 style="margin-top:0">{{ o.name }} <span class="tag">{{ o.get_org_type_display }}</span> <span class="tag">{{ o.city }}</span></h3>
+    {% if o.description %}<p class="muted">{{ o.description|truncatewords:25 }}</p>{% endif %}
+  </div>
+  {% endfor %}
+
+  <h2>{% if LANGUAGE_CODE == "en" %}My opportunities ({{ opportunities|length }}){% else %}فرصي المنشورة ({{ opportunities|length }}){% endif %}</h2>
+  {% if opportunities %}
+  <div class="grid">
+    {% for o in opportunities %}
+    <div class="card">
+      <h3 style="margin-top:0">{{ o.title }}</h3>
+      <span class="tag">{{ o.field }}</span><span class="tag">{{ o.city }}</span>
+      <span class="tag">{% if LANGUAGE_CODE == "en" %}Applicants:{% else %}المتقدمون:{% endif %} {{ o.applications.count }}</span>
+      <p class="muted" style="margin:8px 0 0">{% if LANGUAGE_CODE == "en" %}Published:{% else %}نُشرت:{% endif %} {{ o.created_at|date:"Y-m-d" }}</p>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="card"><p class="muted">{% if LANGUAGE_CODE == "en" %}No opportunities yet — post your first one!{% else %}لا توجد فرص منشورة بعد — انشر أول فرصة!{% endif %}</p></div>
+  {% endif %}
+
+  <h2>{% if LANGUAGE_CODE == "en" %}Received applications{% else %}طلبات التقديم الواردة{% endif %} {% if pending %}<span class="tag" style="background:#fef3c7;border-color:#fcd34d;color:#92400e">{{ pending }} {% if LANGUAGE_CODE == "en" %}pending{% else %}قيد المراجعة{% endif %}</span>{% endif %}</h2>
+  {% if applications %}
+    {% for a in applications %}
+    <div class="card" style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+      <div style="flex:1;min-width:220px">
+        <b>{{ a.student.username }}</b> — {{ a.student.first_name|default:"" }} {{ a.student.last_name|default:"" }}<br>
+        <span class="muted">{% if LANGUAGE_CODE == "en" %}Opportunity:{% else %}الفرصة:{% endif %} {{ a.opportunity.title }}</span>
+        {% if a.cover_letter %}<p class="muted" style="margin:6px 0 0">«{{ a.cover_letter|truncatewords:15 }}»</p>{% endif %}
+      </div>
+      <div>
+        {% if a.status == "pending" %}
+          <span class="tag" style="background:#fef3c7;border-color:#fcd34d;color:#92400e">{% if LANGUAGE_CODE == "en" %}Pending{% else %}قيد المراجعة{% endif %}</span>
+          <a class="btn" style="padding:6px 14px;font-size:13px" href="{% url 'application_status' a.pk 'accepted' %}">{% if LANGUAGE_CODE == "en" %}Accept ✅{% else %}قبول ✅{% endif %}</a>
+          <a class="btn ghost" style="padding:6px 14px;font-size:13px" href="{% url 'application_status' a.pk 'rejected' %}">{% if LANGUAGE_CODE == "en" %}Reject ❌{% else %}رفض ❌{% endif %}</a>
+        {% elif a.status == "accepted" %}
+          <span class="tag" style="background:#dcfce7;border-color:#86efac;color:#166534">{% if LANGUAGE_CODE == "en" %}Accepted{% else %}مقبول ✅{% endif %}</span>
+        {% else %}
+          <span class="tag" style="background:#fee2e2;border-color:#fca5a5;color:#991b1b">{% if LANGUAGE_CODE == "en" %}Rejected{% else %}مرفوض ❌{% endif %}</span>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  {% else %}
+  <div class="card"><p class="muted">{% if LANGUAGE_CODE == "en" %}No applications received yet.{% else %}لم تصل أي طلبات تقديم بعد.{% endif %}</p></div>
+  {% endif %}
+{% endif %}
+{% endblock %}

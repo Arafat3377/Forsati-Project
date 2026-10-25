@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}{% if LANGUAGE_CODE == "en" %}Register your organization{% else %}سجّل جهتك في المنصة{% endif %}{% endblock %}
+{% block content %}
+<div class="hero">
+  <h1 style="font-size:30px">🏢 {% if LANGUAGE_CODE == "en" %}Register your organization{% else %}سجّل جهتك في منصة فرصتي{% endif %}</h1>
+  <p>{% if LANGUAGE_CODE == "en" %}For companies, institutions and universities across Saudi Arabia that offer training opportunities.{% else %}للشركات والمؤسسات والجامعات في المملكة العربية السعودية التي تقدم فرص تدريبية للطلاب{% endif %}</p>
+</div>
+<div class="card" style="max-width:620px;margin:0 auto">
+  <form method="post">{% csrf_token %}
+    {% if form.non_field_errors %}{{ form.non_field_errors }}{% endif %}
+    {% for f in form %}
+      <label>{{ f.label }}</label>
+      {{ f }}
+      {% if f.errors %}<div style="color:#b91c1c;font-size:13px;margin-top:4px">{{ f.errors }}</div>{% endif %}
+      {% if f.help_text %}<div class="muted" style="font-size:13px;margin-top:4px">{{ f.help_text }}</div>{% endif %}
+    {% endfor %}
+    <button class="btn" style="margin-top:16px">{% if LANGUAGE_CODE == "en" %}Register organization{% else %}تسجيل الجهة ✅{% endif %}</button>
+  </form>
+</div>
+{% endblock %}

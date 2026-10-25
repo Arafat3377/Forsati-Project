@@ -1,0 +1,19 @@
+
+{% extends "base.html" %}
+{% load localization %}
+{% block content %}
+<div class="card">
+  <h2>{{ opp.title|localize:LANGUAGE_CODE }}</h2>
+  <p><span class="tag">{{ opp.field|localize:LANGUAGE_CODE }}</span><span class="tag">{{ opp.city|localize:LANGUAGE_CODE }}</span></p>
+  <p><b>{% if LANGUAGE_CODE == "en" %}Organization:{% else %}الجهة:{% endif %}</b> {{ opp.organization.name|localize:LANGUAGE_CODE }}</p>
+  <p><b>{% if LANGUAGE_CODE == "en" %}Description:{% else %}الوصف:{% endif %}</b> {{ opp.description|localize:LANGUAGE_CODE }}</p>
+  <p><b>{% if LANGUAGE_CODE == "en" %}Requirements:{% else %}المتطلبات:{% endif %}</b> {{ opp.requirements|localize:LANGUAGE_CODE|default:"—" }}</p>
+  {% if applied %}
+    <p class="success">✔ {% if LANGUAGE_CODE == "en" %}You have applied for this opportunity{% else %}قمت بالتقديم على هذه الفرصة{% endif %}</p>
+  {% elif user.is_authenticated %}
+    <a class="btn" href="{% url 'apply' opp.pk %}">{% if LANGUAGE_CODE == "en" %}Apply now{% else %}قدّم الآن{% endif %}</a>
+  {% else %}
+    <a class="btn" href="{% url 'login' %}">{% if LANGUAGE_CODE == "en" %}Log in to apply{% else %}سجّل الدخول للتقديم{% endif %}</a>
+  {% endif %}
+</div>
+{% endblock %}

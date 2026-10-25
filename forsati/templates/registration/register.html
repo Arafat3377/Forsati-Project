@@ -1,0 +1,11 @@
+
+{% extends "base.html" %}
+{% block content %}
+<div class="card" style="max-width:420px;margin:auto">
+  <h2>{% if LANGUAGE_CODE == "en" %}Create a student account{% else %}إنشاء حساب طالب{% endif %}</h2>
+  <form method="post">{% csrf_token %}
+    {% for f in form %}<label>{{ f.label }}</label>{{ f }}<br>{% endfor %}
+    <br><button class="btn">{% if LANGUAGE_CODE == "en" %}Register{% else %}تسجيل{% endif %}</button>
+  </form>
+</div>
+{% endblock %}

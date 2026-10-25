@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% if LANGUAGE_CODE == "en" %}AI Career Coach{% else %}مدرب المسارات المهنية 🤖{% endif %}{% endblock %}
+{% block content %}
+<style>
+.coach-wrap{max-width:760px;margin:0 auto}
+.coach-head{text-align:center;padding:34px 18px;background:linear-gradient(135deg,#2e1065,#6d28d9 60%,#a855f7);
+             border-radius:18px;color:#fff;margin-bottom:18px}
+.coach-head h1{margin:0 0 6px;font-size:28px;color:#fff}
+.coach-head p{margin:0;opacity:.9}
+.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:14px 0}
+.chip{border:1px solid #d8c4f5;background:#f7f0ff;color:#4c1d95;border-radius:20px;
+      padding:7px 16px;font-size:14px;font-weight:650;cursor:pointer;transition:all .15s ease}
+.chip:hover{background:#6d28d9;color:#fff}
+.chat{background:#fff;border:1px solid #e5daf7;border-radius:16px;padding:18px;
+      min-height:180px;max-height:480px;overflow-y:auto;margin-bottom:14px;
+      box-shadow:0 7px 22px rgba(76,29,149,.07)}
+.bubble{padding:12px 16px;border-radius:14px;margin:10px 0;line-height:1.9;
+        white-space:pre-line;font-size:15px;max-width:88%}
+.bubble.q{background:linear-gradient(120deg,#6d28d9,#a855f7);color:#fff;margin-inline-start:auto;
+          border-end-end-radius:4px}
+.bubble.a{background:#f5f0ff;border:1px solid #e5daf7;color:#302344;border-end-start-radius:4px}
+.bubble.coach-tag{font-size:12px;color:#756985;background:none;padding:0 4px}
+.coach-form{display:flex;gap:10px}
+.coach-form textarea{flex:1;resize:vertical;min-height:56px}
+.empty-chat{text-align:center;color:#756985;padding:40px 10px}
+@media(max-width:640px){.coach-form{flex-direction:column}}
+</style>
+
+<div class="coach-wrap">
+  <div class="coach-head">
+    <h1>🎓 {% if LANGUAGE_CODE == "en" %}AI Training Career Coach{% else %}مدرب المسارات المهنية — المساعد الذكي للطالب{% endif %}</h1>
+    <p>{% if LANGUAGE_CODE == "en" %}Ask about training opportunities, interviews, your CV, or your career path.{% else %}اسأل عن الفرص المناسبة لتخصصك، المقابلات، سيرتك الذاتية، أو مسارك المهني{% endif %}</p>
+  </div>
+
+  <div class="chips">
+    <button type="button" class="chip" onclick="ask('ما الفرص التدريبية المناسبة لتخصصي؟')">🎯 {% if LANGUAGE_CODE == "en" %}Opportunities for me{% else %}الفرص المناسبة لتخصصي{% endif %}</button>
+    <button type="button" class="chip" onclick="ask('كيف أجهز نفسي للمقابلة التدريبية؟')">🗣️ {% if LANGUAGE_CODE == "en" %}Interview prep{% else %}المقابلة التدريبية{% endif %}</button>
+    <button type="button" class="chip" onclick="ask('راجع لي سيرتي الذاتية واقترح تحسينات')">📄 {% if LANGUAGE_CODE == "en" %}Improve my CV{% else %}تحسين السيرة الذاتية{% endif %}</button>
+    <button type="button" class="chip" onclick="ask('كيف أكتب خطاب تقديم لجهة تدريب؟')">✉️ {% if LANGUAGE_CODE == "en" %}Cover letter{% else %}خطاب التقديم{% endif %}</button>
+    <button type="button" class="chip" onclick="ask('ما المهارات والمسار الوظيفي المناسب لي؟')">🧭 {% if LANGUAGE_CODE == "en" %}Career path &amp; skills{% else %}المهارات والمسار المهني{% endif %}</button>
+  </div>
+
+  <div class="chat" id="chat">
+    {% if not history %}
+    <div class="empty-chat">
+      🤖<br>
+      {% if LANGUAGE_CODE == "en" %}Start the conversation — pick a topic above or write your question below.{% else %}ابدأ المحادثة — اختر موضوعاً من الأزرار أعلاه أو اكتب سؤالك بالأسفل.{% endif %}
+    </div>
+    {% endif %}
+    {% for h in history %}
+      <div><span class="bubble coach-tag">{% if LANGUAGE_CODE == "en" %}You{% else %}أنت{% endif %}</span></div>
+      <div class="bubble q">{{ h.q }}</div>
+      <div><span class="bubble coach-tag">🤖 {% if LANGUAGE_CODE == "en" %}Career Coach{% else %}المدرب المهني{% endif %}</span></div>
+      <div class="bubble a">{{ h.a }}</div>
+    {% endfor %}
+  </div>
+
+  {% if opportunities and asked %}
+  <div class="card" style="border-right:4px solid var(--a)">
+    <h3 style="margin-top:0">{% if LANGUAGE_CODE == "en" %}Matching opportunities on the platform{% else %}الفرص المطابقة في المنصة{% endif %} ({{ opportunities|length }})</h3>
+    {% for o in opportunities|slice:":4" %}
+      <p style="margin:6px 0">• <a href="{% url 'opportunity_detail' o.pk %}" style="color:var(--p);font-weight:650">{{ o.title }}</a>
+        — {{ o.organization.name }} <span class="tag">{{ o.city }}</span> <span class="tag">{{ o.field }}</span></p>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <form method="post" class="coach-form">{% csrf_token %}
+    <textarea name="message" id="msg" required
+      placeholder="{% if LANGUAGE_CODE == 'en' %}Example: I am a computer science student — what training fits me?{% else %}مثال: أنا طالبة علوم حاسب — ما الفرص المناسبة لي؟{% endif %}"></textarea>
+    <button class="btn" style="align-self:flex-end">{% if LANGUAGE_CODE == "en" %}Send{% else %}إرسال 🚀{% endif %}</button>
+  </form>
+  {% if history %}
+  <p style="text-align:center;margin-top:14px"><a class="muted" href="?clear=1">{% if LANGUAGE_CODE == "en" %}Clear conversation{% else %}مسح المحادثة 🗑️{% endif %}</a></p>
+  {% endif %}
+</div>
+
+<script>
+function ask(q){ document.getElementById('msg').value = q; document.getElementById('msg').focus(); }
+window.onload = function(){ var c = document.getElementById('chat'); c.scrollTop = c.scrollHeight; };
+</script>
+{% endblock %}
