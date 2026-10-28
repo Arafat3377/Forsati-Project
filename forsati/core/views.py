@@ -44,8 +44,8 @@ def opportunity_list(request):
         qs = qs.filter(field__icontains=field)
     return render(request, "core/opportunity_list.html", {
         "opportunities": qs,
-        "cities": Opportunity.objects.values_list("city", flat=True).distinct(),
-        "fields": Opportunity.objects.values_list("field", flat=True).distinct(),
+        "cities": Opportunity.objects.filter(is_active=True).values_list("city", flat=True).distinct(),
+        "fields": Opportunity.objects.filter(is_active=True).values_list("field", flat=True).distinct(),
         "q": q, "city": city, "field": field,
     })
 

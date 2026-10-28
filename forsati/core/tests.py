@@ -154,6 +154,20 @@ class AuthAndI18nTests(TestCase):
         self.assertEqual(Opportunity.objects.count(), 26)
         self.assertTrue(Opportunity.objects.filter(field="دعم فني").exists())
         self.assertTrue(Opportunity.objects.filter(field="تحليل نظم").exists())
+        self.assertTrue(Organization.objects.filter(org_type="university").exists())
+        self.assertTrue(Organization.objects.filter(org_type="bank").exists())
+        self.assertTrue(Organization.objects.filter(org_type="gov").exists())
+        self.assertTrue(Organization.objects.filter(website__gt="").exists())
 
         call_command("seed_demo", verbosity=0)
         self.assertEqual(Opportunity.objects.count(), 26)
+
+    def test_seeded_opportunities_populate_search_filters(self):
+        call_command("seed_demo", verbosity=0)
+
+        response = self.client.get(reverse("opportunity_list"))
+
+        self.assertContains(response, '<option>بريدة</option>', html=True)
+        self.assertContains(response, '<option>أمن سيبراني</option>', html=True)
+        response = self.client.get(reverse("opportunity_list"), {"city": "بريدة", "field": "أمن سيبراني"})
+        self.assertContains(response, "تدريب تعاوني - أمن سيبراني")
